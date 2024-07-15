@@ -1,10 +1,10 @@
 import db from "../Database/index.js";
 export default function UserRoutes(app) {
-  app.put("/api/users/:uid", (req, res) => {
+  app.put("/api/users/update/:uid", (req, res) => {
     const { uid } = req.params;
-    const assignmentIndex = db.assignments.findIndex((a) => a._id === aid);
-    db.assignments[assignmentIndex] = {
-      ...db.assignments[assignmentIndex],
+    const userIndex = db.users.findIndex((u) => u._id === uid);
+    db.users[userIndex] = {
+      ...db.users[userIndex],
       ...req.body,
     };
     res.sendStatus(204);
@@ -30,14 +30,11 @@ export default function UserRoutes(app) {
   app.get("/api/users/auth/:username/:password", (req, res) => {
     const { username, password } = req.params;
     const user = db.users.filter((u) => u.username === username);
-    if (user.length===0) {
+    if (user.length === 0) {
       return res.status(400).send({ error: "User does not exist!" });
     } else if (user[0].password != password) {
       return res.status(400).send({ error: "Password is not correct!" });
     }
     res.json(user);
-  });
-  app.get("/api/users", (req, res) => {
-    res.json(db.users);
   });
 }
