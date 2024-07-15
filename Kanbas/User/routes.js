@@ -25,7 +25,7 @@ export default function UserRoutes(app) {
   app.get("/api/users/get/:uid", (req, res) => {
     const { uid } = req.params;
     const user = db.users.filter((u) => u._id === uid);
-    res.send(user);
+    res.json(user);
   });
   app.get("/api/users/auth/:username/:password", (req, res) => {
     const { username, password } = req.params;
