@@ -5,12 +5,19 @@ import CourseRoutes from "./Kanbas/Courses/routes.js";
 import cors from "cors";
 import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
+import QuizzesRoutes from "./Kanbas/Quizzes/routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 AssignmentRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
+QuizzesRoutes(app);
 Lab5(app);
 Hello(app);
-app.listen(process.env.PORT || 4000);
+
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
