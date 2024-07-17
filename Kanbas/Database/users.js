@@ -89,4 +89,14 @@ export default [
     dob: "2879-07-15",
     role: "FACULTY",
   },
+  {
+    _id: "130",
+    username: "zhi_ling",
+    password: "1234",
+    firstName: "Zhi",
+    lastName: "Ling",
+    email: "ling.zhi@northeastern.edu",
+    dob: "2000-04-26",
+    role: "FACULTY",
+  },
 ];
