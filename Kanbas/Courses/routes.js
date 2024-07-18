@@ -25,7 +25,7 @@ export default function CourseRoutes(app) {
     res.send(course);
   });
 
-  app.post("/api/courses/uid", (req, res) => {
+  app.post("/api/courses/:uid", (req, res) => {
     const { uid } = req.params;
     const course = { ...req.body, _id: "RS" + new Date().getTime().toString() };
     Database.courses.push(course);
