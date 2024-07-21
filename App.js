@@ -6,10 +6,11 @@ import cors from "cors";
 import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
 import QuizzesRoutes from "./Kanbas/Quizzes/routes.js";
+import UserRoutes from "./Kanbas/User/routes.js";
+import EnrollmentsRoutes from "./Kanbas/Enrollments/routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 AssignmentRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
