@@ -368,7 +368,7 @@ export default [
     published: true
   },
   {
-    _id: 17,
+    _id: "17",
     title: "Q17 - Networking",
     quizType: "Graded Quiz",
     points: 50,
@@ -391,7 +391,7 @@ export default [
     published: true
   },
   {
-    _id: 18,
+    _id: "18",
     title: "Q18 - Software Engineering",
     quizType: "Practice Quiz",
     points: 45,
@@ -414,7 +414,7 @@ export default [
     published: true
   },
   {
-    _id: 19,
+    _id: "19",
     title: "Q19 - AI",
     quizType: "Graded Survey",
     points: 55,
@@ -437,7 +437,7 @@ export default [
     published: true
   },
   {
-    _id: 20,
+    _id: "20",
     title: "Q20 - Big Data",
     quizType: "Ungraded Survey",
     points: 35,
@@ -460,7 +460,7 @@ export default [
     published: true
   },
   {
-    _id: 21,
+    _id: "21",
     title: "Q21 - Cybersecurity",
     quizType: "Graded Quiz",
     points: 50,
