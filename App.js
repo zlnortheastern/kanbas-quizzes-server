@@ -19,4 +19,4 @@ CourseRoutes(app);
 QuizzesRoutes(app);
 Lab5(app);
 Hello(app);
-const port = process.env.PORT || 4000;
+app.listen(process.env.PORT || 4000);
