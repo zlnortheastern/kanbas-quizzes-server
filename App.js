@@ -11,14 +11,12 @@ import EnrollmentsRoutes from "./Kanbas/Enrollments/routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+UserRoutes(app);
+EnrollmentsRoutes(app);
 AssignmentRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
 QuizzesRoutes(app);
 Lab5(app);
 Hello(app);
-
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
