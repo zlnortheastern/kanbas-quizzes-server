@@ -1,44 +1,32 @@
-import Database from "../Database/index.js";
+import * as dao from "./dao.js";
+import { createEnrollment, deleteEnrollments } from "../Enrollments/dao.js";
 export default function CourseRoutes(app) {
-  app.put("/api/courses/:id", (req, res) => {
+  app.put("/api/courses/:id", async (req, res) => {
+    const course = await dao.updateCourse(req.params.id, req.body);
+    res.json(course);
+  });
+
+  app.delete("/api/courses/:id", async (req, res) => {
     const { id } = req.params;
-    const course = req.body;
-    Database.courses = Database.courses.map((c) =>
-      c._id === id ? { ...c, ...course } : c
-    );
-    res.sendStatus(204);
+    const status = await dao.deleteCourse(id);
+    const status1 = await deleteEnrollments(id);
+    res.json(status);
   });
 
-  app.delete("/api/courses/:id", (req, res) => {
-    const { id } = req.params;
-    Database.courses = Database.courses.filter((c) => c._id !== id);
-    // Clear up enrollments while deleting a course.
-    Database.enrollments = Database.enrollments.filter((e) => {
-      e.course !== id;
-    });
-    res.sendStatus(204);
+  app.post("/api/courses", async (req, res) => {
+    const course = await dao.createCourse(req.body);
+    res.json(course);
   });
-
-  app.post("/api/courses", (req, res) => {
-    const course = { ...req.body, _id: new Date().getTime().toString() };
-    Database.courses.push(course);
-    res.send(course);
-  });
-
-  app.post("/api/courses/:uid", (req, res) => {
-    const { uid } = req.params;
-    const course = { ...req.body, _id: "RS" + new Date().getTime().toString() };
-    Database.courses.push(course);
-    Database.enrollments.push({
-      _id: new Date().getTime().toString(),
-      user: uid,
+  app.post("/api/courses/:uid", async (req, res) => {
+    const course = await dao.createCourse(req.body);
+    await createEnrollment({
+      user: req.params.uid,
       course: course._id,
     });
-    res.send(course);
+    res.json(course);
   });
-
-  app.get("/api/courses", (req, res) => {
-    const courses = Database.courses;
+  app.get("/api/courses", async (req, res) => {
+    const courses = await dao.findAllCourses();
     res.send(courses);
   });
 }
