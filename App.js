@@ -11,6 +11,8 @@ import session from "express-session";
 import UserRoutes from "./Kanbas/User/routes.js";
 import EnrollmentsRoutes from "./Kanbas/Enrollments/routes.js";
 import QuizzesRoutes from "./Kanbas/Quizzes/routes.js";
+import QuestionsRoutes from "./Kanbas/Questions/routes.js";
+import AnswersRoutes from "./Kanbas/Answers/routes.js";
 
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
@@ -37,6 +39,8 @@ if (process.env.NODE_ENV !== "development") {
 }
 app.use(session(sessionOptions));
 app.use(express.json());
+AnswersRoutes(app);
+QuestionsRoutes(app);
 UserRoutes(app);
 EnrollmentsRoutes(app);
 AssignmentRoutes(app);
