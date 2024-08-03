@@ -10,7 +10,10 @@ const moduleSchema = new mongoose.Schema(
     timeLimit: Number,
     multipleAttempts: Boolean,
     attemptLimit: Number,
-    showCorrectAnswers: String,
+    showCorrectAnswers: {
+      type: String,
+      enum: ["after_due_date", "immediately", "never"],
+    },
     accessCode: String,
     oneQuestionAtATime: Boolean,
     webcamRequired: Boolean,
