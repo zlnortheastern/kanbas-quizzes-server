@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const moduleSchema = new mongoose.Schema(
+const quizSchema = new mongoose.Schema(
   {
     title: String,
     description: String,
@@ -25,4 +25,4 @@ const moduleSchema = new mongoose.Schema(
   },
   { collection: "quizzes" }
 );
-export default moduleSchema;
+export default quizSchema;
