@@ -12,13 +12,17 @@ export const updateQuestions = (quiestionsId, quiestions) =>
 export const deleteQuestions = (quiestionsId) =>
   model.deleteOne({ _id: quiestionsId });
 
-export const addQuestionToSet = async (questionsId, newQuestion) => {
-  const questionsSet = await model.findById(questionsId);
-  questionsSet.questions.push(newQuestion);
-  return questionsSet.save();
+export const addQuestionToQuiz = async (quizId, newQuestion) => {
+  const questionsSet = await model.findOne({ quiz: quizId });
+  if (questionsSet) {
+    questionsSet.questions.push(newQuestion);
+    return questionsSet.save();
+  } else {
+    throw new Error("Questions set not found for the given quiz ID");
+  }
 };
 
-export const updateQuestionInSet = async (
+export const updateQuestion = async (
   questionsId,
   questionIndex,
   updatedQuestion
@@ -28,7 +32,7 @@ export const updateQuestionInSet = async (
   return questionsSet.save();
 };
 
-export const removeQuestionFromSet = async (questionsId, questionIndex) => {
+export const deleteQuestion = async (questionsId, questionIndex) => {
   const questionsSet = await model.findById(questionsId);
   questionsSet.questions.splice(questionIndex, 1);
   return questionsSet.save();

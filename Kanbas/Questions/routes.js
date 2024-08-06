@@ -11,11 +11,15 @@ export default function QuestionsRoutes(app) {
   });
 
   app.post("/api/quizzes/:qid/questions", async (req, res) => {
-    const newQuestionSet = await dao.createQuestionSet({
-      ...req.body,
-      quiz: req.params.qid,
-    });
-    res.send(newQuestionSet);
+    try {
+      const updatedQuestionSet = await dao.addQuestionToQuiz(
+        req.params.qid,
+        req.body
+      );
+      res.json(updatedQuestionSet);
+    } catch (error) {
+      res.status(404).send(error.message);
+    }
   });
 
   app.get("/api/quizzes/:qid/questions", async (req, res) => {
@@ -43,7 +47,7 @@ export default function QuestionsRoutes(app) {
 
   app.put("/api/questions/:qid/:index", async (req, res) => {
     const updatedQuestion = req.body;
-    const updatedQuestionSet = await dao.updateQuestionInSet(
+    const updatedQuestionSet = await dao.updateQuestion(
       req.params.qid,
       req.params.index,
       updatedQuestion
@@ -52,7 +56,7 @@ export default function QuestionsRoutes(app) {
   });
 
   app.delete("/api/questions/:qid/:index", async (req, res) => {
-    const updatedQuestionSet = await dao.removeQuestionFromSet(
+    const updatedQuestionSet = await dao.deleteQuestion(
       req.params.qid,
       req.params.index
     );
