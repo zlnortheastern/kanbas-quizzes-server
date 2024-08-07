@@ -12,9 +12,10 @@ export default function QuestionsRoutes(app) {
 
   app.post("/api/quizzes/:qid/questions", async (req, res) => {
     try {
-      const updatedQuestionSet = await dao.addQuestionToQuiz(
+      const newQuestion = req.body;
+      const updatedQuestionSet = await dao.createQuestion(
         req.params.qid,
-        req.body
+        newQuestion
       );
       res.json(updatedQuestionSet);
     } catch (error) {
@@ -28,38 +29,39 @@ export default function QuestionsRoutes(app) {
   });
 
   app.get("/api/questions/:id", async (req, res) => {
-    const questions = await dao.findQuestions(req.params.id);
-    if (questions) {
-      res.json(questions);
+    const question = await dao.findQuestion(req.params.id);
+    if (question) {
+      res.json(question);
     } else {
-      res.status(404).send("Questions not found");
+      res.status(404).send("Question not found");
     }
   });
 
   app.post("/api/questions/:qid/new", async (req, res) => {
     const newQuestion = req.body;
-    const updatedQuestionSet = await dao.addQuestionToSet(
+    const createdQuestion = await dao.createQuestion(
       req.params.qid,
       newQuestion
     );
-    res.json(updatedQuestionSet);
+    res.json(createdQuestion);
   });
 
-  app.put("/api/questions/:qid/:index", async (req, res) => {
-    const updatedQuestion = req.body;
-    const updatedQuestionSet = await dao.updateQuestion(
-      req.params.qid,
-      req.params.index,
-      updatedQuestion
-    );
-    res.json(updatedQuestionSet);
+  app.put("/api/questions/:qid/:id", async (req, res) => {
+    const updatedQuestion = await dao.updateQuestion(req.params.id, req.body);
+    res.json(updatedQuestion);
   });
 
-  app.delete("/api/questions/:qid/:index", async (req, res) => {
-    const updatedQuestionSet = await dao.deleteQuestion(
-      req.params.qid,
-      req.params.index
-    );
-    res.json(updatedQuestionSet);
+  app.delete("/api/questions/:qid/:id", async (req, res) => {
+    const status = await dao.deleteQuestion(req.params.id);
+    res.json(status);
+  });
+
+  app.get("/api/questions/:questionId/choices", async (req, res) => {
+    try {
+      const choices = await dao.findChoicesForQuestion(req.params.questionId);
+      res.json(choices);
+    } catch (error) {
+      res.status(404).send(error.message);
+    }
   });
 }

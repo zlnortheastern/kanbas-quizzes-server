@@ -1,39 +1,36 @@
 import model from "./model.js";
 export const createQuestionSet = (questions) => {
   delete questions._id;
-  questions.quiz = quizzes._id;
+  questions.quiz = quizId;
   return model.create(questions);
 };
 
+export const createQuestion = (quizId, question) => {
+  delete question._id;
+  question.quiz = quizId;
+  return model.create(question);
+};
+
 export const findQuestions = (questionsId) => model.findById(questionsId);
+export const findQuestion = (id) => model.findById(id);
+
 export const findQuestionsByQuiz = (quizId) => model.findOne({ quiz: quizId });
+export const findQuestionsByType = (type, quizId) =>
+  model.find({ questionType: type, quizID: quizId });
+
 export const updateQuestions = (quiestionsId, quiestions) =>
   model.updateOne({ _id: quiestionsId }, { $set: quiestions });
+export const updateQuestion = (id, question) =>
+  model.updateOne({ _id: id }, { $set: question });
 export const deleteQuestions = (quiestionsId) =>
   model.deleteOne({ _id: quiestionsId });
+export const deleteQuestion = (id) => model.deleteOne({ _id: id });
 
-export const addQuestionToQuiz = async (quizId, newQuestion) => {
-  const questionsSet = await model.findOne({ quiz: quizId });
-  if (questionsSet) {
-    questionsSet.questions.push(newQuestion);
-    return questionsSet.save();
+export const findChoicesForQuestion = async (questionId) => {
+  const question = await model.findById(questionId);
+  if (question) {
+    return question.choices;
   } else {
-    throw new Error("Questions set not found for the given quiz ID");
+    throw new Error("Question not found for the given ID");
   }
-};
-
-export const updateQuestion = async (
-  questionsId,
-  questionIndex,
-  updatedQuestion
-) => {
-  const questionsSet = await model.findById(questionsId);
-  questionsSet.questions[questionIndex] = updatedQuestion;
-  return questionsSet.save();
-};
-
-export const deleteQuestion = async (questionsId, questionIndex) => {
-  const questionsSet = await model.findById(questionsId);
-  questionsSet.questions.splice(questionIndex, 1);
-  return questionsSet.save();
 };
