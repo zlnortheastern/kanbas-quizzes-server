@@ -32,7 +32,7 @@ export default function QuestionsRoutes(app) {
     }
   });
 
-  app.post("/api/questions/:qid/new", async (req, res) => {
+  app.post("/api/questions/:qid/add", async (req, res) => {
     const question = await dao.addQuestion(req.params.qid, req.body);
     res.json(question);
   });
@@ -49,5 +49,17 @@ export default function QuestionsRoutes(app) {
   app.delete("/api/questions/:qid/delete/:title", async (req, res) => {
     const status = await dao.deleteQuestion(req.params.qid, req.params.title);
     res.json(status);
+  });
+
+  app.get("/api/questions/:qid/question/:title", async (req, res) => {
+    const questionsSet = await dao.findQuestions(req.params.qid);
+    const question = questionsSet.questions.find(
+      (q) => q.title === req.params.title
+    );
+    if (question) {
+      res.json(question);
+    } else {
+      res.status(404).send("Question not found");
+    }
   });
 }
