@@ -39,3 +39,30 @@ export const deleteQuestion = async (questionsId, questionTitle) => {
     { $pull: { questions: { title: questionTitle } } }
   );
 };
+
+export const addChoice = async (questionsId, questionTitle, newChoice) => {
+  return model.updateOne(
+    { _id: questionsId, "questions.title": questionTitle },
+    { $push: { "questions.$.choices": newChoice } }
+  );
+};
+
+export const deleteChoice = async (questionsId, questionTitle, choiceId) => {
+  return model.updateOne(
+    { _id: questionsId, "questions.title": questionTitle },
+    { $pull: { "questions.$.choices": { _id: choiceId } } }
+  );
+};
+
+export const addBlank = async (questionsId, questionTitle, newAnswer) => {
+  return model.updateOne(
+    { _id: questionsId, "questions.title": questionTitle },
+    { $push: { "questions.$.blank": newAnswer } }
+  );
+};
+export const deleteBlank = async (questionsId, questionTitle, answer) => {
+  return model.updateOne(
+    { _id: questionsId, "questions.title": questionTitle },
+    { $pull: { "questions.$.blank": answer } }
+  );
+};

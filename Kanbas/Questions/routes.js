@@ -62,4 +62,52 @@ export default function QuestionsRoutes(app) {
       res.status(404).send("Question not found");
     }
   });
+
+  app.post("/api/questions/:qid/question/:title/choices", async (req, res) => {
+    const { qid, title } = req.params;
+    const newChoice = req.body;
+    try {
+      const updatedQuestion = await dao.addChoice(qid, title, newChoice);
+      res.json(updatedQuestion);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.delete(
+    "/api/questions/:qid/question/:title/choices/:choiceId",
+    async (req, res) => {
+      const { qid, title, choiceId } = req.params;
+      try {
+        const updatedQuestion = await dao.deleteChoice(qid, title, choiceId);
+        res.json(updatedQuestion);
+      } catch (error) {
+        res.status(500).send(error.message);
+      }
+    }
+  );
+
+  app.post("/api/questions/:qid/question/:title/blank", async (req, res) => {
+    const { qid, title } = req.params;
+    const newAnswer = req.body.answer;
+    try {
+      const updatedQuestion = await dao.addBlank(qid, title, newAnswer);
+      res.json(updatedQuestion);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  });
+
+  app.delete(
+    "/api/questions/:qid/question/:title/blank/:answer",
+    async (req, res) => {
+      const { qid, title, answer } = req.params;
+      try {
+        const updatedQuestion = await dao.deleteBlank(qid, title, answer);
+        res.json(updatedQuestion);
+      } catch (error) {
+        res.status(500).send(error.message);
+      }
+    }
+  );
 }
