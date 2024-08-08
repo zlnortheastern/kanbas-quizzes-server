@@ -11,16 +11,11 @@ export default function QuestionsRoutes(app) {
   });
 
   app.post("/api/quizzes/:qid/questions", async (req, res) => {
-    try {
-      const newQuestion = req.body;
-      const updatedQuestionSet = await dao.createQuestion(
-        req.params.qid,
-        newQuestion
-      );
-      res.json(updatedQuestionSet);
-    } catch (error) {
-      res.status(404).send(error.message);
-    }
+    const newQuestionSet = await dao.createQuestionSet({
+      ...req.body,
+      quiz: req.params.qid,
+    });
+    res.send(newQuestionSet);
   });
 
   app.get("/api/quizzes/:qid/questions", async (req, res) => {
@@ -29,39 +24,30 @@ export default function QuestionsRoutes(app) {
   });
 
   app.get("/api/questions/:id", async (req, res) => {
-    const question = await dao.findQuestion(req.params.id);
-    if (question) {
-      res.json(question);
+    const questions = await dao.findQuestions(req.params.id);
+    if (questions) {
+      res.json(questions);
     } else {
-      res.status(404).send("Question not found");
+      res.status(404).send("Questions not found");
     }
   });
 
   app.post("/api/questions/:qid/new", async (req, res) => {
-    const newQuestion = req.body;
-    const createdQuestion = await dao.createQuestion(
-      req.params.qid,
-      newQuestion
-    );
-    res.json(createdQuestion);
+    const question = await dao.addQuestion(req.params.qid, req.body);
+    res.json(question);
   });
 
-  app.put("/api/questions/:qid/:id", async (req, res) => {
-    const updatedQuestion = await dao.updateQuestion(req.params.id, req.body);
+  app.put("/api/questions/:qid/update/:title", async (req, res) => {
+    const updatedQuestion = await dao.updateQuestion(
+      req.params.qid,
+      req.params.title,
+      req.body
+    );
     res.json(updatedQuestion);
   });
 
-  app.delete("/api/questions/:qid/:id", async (req, res) => {
-    const status = await dao.deleteQuestion(req.params.id);
+  app.delete("/api/questions/:qid/delete/:title", async (req, res) => {
+    const status = await dao.deleteQuestion(req.params.qid, req.params.title);
     res.json(status);
-  });
-
-  app.get("/api/questions/:questionId/choices", async (req, res) => {
-    try {
-      const choices = await dao.findChoicesForQuestion(req.params.questionId);
-      res.json(choices);
-    } catch (error) {
-      res.status(404).send(error.message);
-    }
   });
 }
