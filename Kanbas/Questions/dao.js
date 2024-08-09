@@ -1,9 +1,11 @@
 import model from "./model.js";
 export const createQuestionSet = (questions) => {
   delete questions._id;
-  questions.quiz = quizId;
+  //questions.quiz = quizId;
   return model.create(questions);
 };
+
+export const findAllQuestions = () => model.find();
 
 export const findQuestions = (questionsId) => model.findById(questionsId);
 
