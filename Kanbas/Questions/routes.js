@@ -19,8 +19,18 @@ export default function QuestionsRoutes(app) {
   });
 
   app.get("/api/quizzes/:qid/questions", async (req, res) => {
-    const questions = await dao.findQuestionsByQuiz(req.params.qid);
-    res.json(questions);
+    try {
+      const questions = await dao.findQuestionsByQuiz(req.params.qid);
+      if (questions) {
+        res.json(questions);
+      } else {
+        console.log(`The current quizId is ${req.params.qid}`);
+        res.json({ questions: [] });
+      }
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      res.status(500).send("Internal Server Error");
+    }
   });
 
   app.get("/api/questions/:id", async (req, res) => {
