@@ -35,18 +35,6 @@ export const updateQuestion = async (
   return model.updateOne({ quiz: questionsId }, { $set: query });
 };
 
-export const deleteQuestion = async (questionsId, questionIndex) => {
-  const questions = await model.findOne({ _id: questionsId });
-  if (!questions || !questions.questions[questionIndex]) return null;
-
-  questions.questions.splice(questionIndex, 1);
-
-  return model.updateOne(
-    { _id: questionsId },
-    { $set: { questions: questions.questions } }
-  );
-};
-
 export const addChoice = async (questionsId, questionIndex, newChoice) => {
   const query = {};
   query[`questions.${questionIndex}.choices`] = newChoice;

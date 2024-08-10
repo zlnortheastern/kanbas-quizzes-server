@@ -54,13 +54,6 @@ export default function QuestionsRoutes(app) {
     res.json(updatedQuestion);
   });
 
-  app.delete("/api/questions/:qid/delete/:index", async (req, res) => {
-    const { qid, index } = req.params;
-    const questionIndex = parseInt(index, 10);
-    const status = await dao.deleteQuestion(qid, questionIndex);
-    res.json(status);
-  });
-
   app.get("/api/questions/:qid/question/:index", async (req, res) => {
     const { qid, index } = req.params;
     const questionIndex = parseInt(index, 10);
