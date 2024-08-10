@@ -43,31 +43,29 @@ export default function QuestionsRoutes(app) {
     res.json(question);
   });
 
-  app.put("/api/questions/:qid/update/:title", async (req, res) => {
-    const { qid, title } = req.params;
-    const decodedTitle = decodeURIComponent(title);
+  app.put("/api/questions/:qid/update/:index", async (req, res) => {
+    const { qid, index } = req.params;
+    const questionIndex = parseInt(index, 10);
     const updatedQuestion = await dao.updateQuestion(
       qid,
-      decodedTitle,
+      questionIndex,
       req.body
     );
     res.json(updatedQuestion);
   });
 
-  app.delete("/api/questions/:qid/delete/:title", async (req, res) => {
-    const { qid, title } = req.params;
-    const decodedTitle = decodeURIComponent(title);
-    const status = await dao.deleteQuestion(qid, decodedTitle);
+  app.delete("/api/questions/:qid/delete/:index", async (req, res) => {
+    const { qid, index } = req.params;
+    const questionIndex = parseInt(index, 10);
+    const status = await dao.deleteQuestion(qid, questionIndex);
     res.json(status);
   });
 
-  app.get("/api/questions/:qid/question/:title", async (req, res) => {
-    const { qid, title } = req.params;
-    const decodedTitle = decodeURIComponent(title);
+  app.get("/api/questions/:qid/question/:index", async (req, res) => {
+    const { qid, index } = req.params;
+    const questionIndex = parseInt(index, 10);
     const questionsSet = await dao.findQuestions(qid);
-    const question = questionsSet.questions.find(
-      (q) => q.title === decodedTitle
-    );
+    const question = questionsSet.questions[questionIndex];
     if (question) {
       res.json(question);
     } else {
@@ -75,12 +73,16 @@ export default function QuestionsRoutes(app) {
     }
   });
 
-  app.post("/api/questions/:qid/question/:title/choices", async (req, res) => {
-    const { qid, title } = req.params;
-    const decodedTitle = decodeURIComponent(title);
+  app.post("/api/questions/:qid/question/:index/choices", async (req, res) => {
+    const { qid, index } = req.params;
+    const questionIndex = parseInt(index, 10);
     const newChoice = req.body;
     try {
-      const updatedQuestion = await dao.addChoice(qid, decodedTitle, newChoice);
+      const updatedQuestion = await dao.addChoice(
+        qid,
+        questionIndex,
+        newChoice
+      );
       res.json(updatedQuestion);
     } catch (error) {
       res.status(500).send(error.message);
@@ -88,14 +90,14 @@ export default function QuestionsRoutes(app) {
   });
 
   app.delete(
-    "/api/questions/:qid/question/:title/choices/:choiceId",
+    "/api/questions/:qid/question/:index/choices/:choiceId",
     async (req, res) => {
-      const { qid, title, choiceId } = req.params;
-      const decodedTitle = decodeURIComponent(title);
+      const { qid, index, choiceId } = req.params;
+      const questionIndex = parseInt(index, 10);
       try {
         const updatedQuestion = await dao.deleteChoice(
           qid,
-          decodedTitle,
+          questionIndex,
           choiceId
         );
         res.json(updatedQuestion);
@@ -105,12 +107,12 @@ export default function QuestionsRoutes(app) {
     }
   );
 
-  app.post("/api/questions/:qid/question/:title/blank", async (req, res) => {
-    const { qid, title } = req.params;
-    const decodedTitle = decodeURIComponent(title);
+  app.post("/api/questions/:qid/question/:index/blank", async (req, res) => {
+    const { qid, index } = req.params;
+    const questionIndex = parseInt(index, 10);
     const newAnswer = req.body.answer;
     try {
-      const updatedQuestion = await dao.addBlank(qid, decodedTitle, newAnswer);
+      const updatedQuestion = await dao.addBlank(qid, questionIndex, newAnswer);
       res.json(updatedQuestion);
     } catch (error) {
       res.status(500).send(error.message);
@@ -118,14 +120,14 @@ export default function QuestionsRoutes(app) {
   });
 
   app.delete(
-    "/api/questions/:qid/question/:title/blank/:answer",
+    "/api/questions/:qid/question/:index/blank/:answer",
     async (req, res) => {
-      const { qid, title, answer } = req.params;
-      const decodedTitle = decodeURIComponent(title);
+      const { qid, index, answer } = req.params;
+      const questionIndex = parseInt(index, 10);
       try {
         const updatedQuestion = await dao.deleteBlank(
           qid,
-          decodedTitle,
+          questionIndex,
           answer
         );
         res.json(updatedQuestion);

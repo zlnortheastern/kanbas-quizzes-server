@@ -1,7 +1,6 @@
 import model from "./model.js";
 export const createQuestionSet = (questions) => {
   delete questions._id;
-  //questions.quiz = quizId;
   return model.create(questions);
 };
 
@@ -26,45 +25,65 @@ export const addQuestion = async (questionsId, newQuestion) => {
 
 export const updateQuestion = async (
   questionsId,
-  questionTitle,
+  questionIndex,
   updatedQuestion
 ) => {
-  return model.updateOne(
-    { _id: questionsId, "questions.title": questionTitle },
-    { $set: { "questions.$": updatedQuestion } }
-  );
+  const query = {};
+  query[`questions.${questionIndex}`] = updatedQuestion;
+
+  return model.updateOne({ _id: questionsId }, { $set: query });
 };
 
-export const deleteQuestion = async (questionsId, questionTitle) => {
+export const deleteQuestion = async (questionsId, questionIndex) => {
+  const questions = await model.findOne({ _id: questionsId });
+  if (!questions || !questions.questions[questionIndex]) return null;
+
+  questions.questions.splice(questionIndex, 1);
+
   return model.updateOne(
     { _id: questionsId },
-    { $pull: { questions: { title: questionTitle } } }
+    { $set: { questions: questions.questions } }
   );
 };
 
-export const addChoice = async (questionsId, questionTitle, newChoice) => {
-  return model.updateOne(
-    { _id: questionsId, "questions.title": questionTitle },
-    { $push: { "questions.$.choices": newChoice } }
-  );
+export const addChoice = async (questionsId, questionIndex, newChoice) => {
+  const query = {};
+  query[`questions.${questionIndex}.choices`] = newChoice;
+
+  return model.updateOne({ _id: questionsId }, { $push: query });
 };
 
-export const deleteChoice = async (questionsId, questionTitle, choiceId) => {
-  return model.updateOne(
-    { _id: questionsId, "questions.title": questionTitle },
-    { $pull: { "questions.$.choices": { _id: choiceId } } }
+export const deleteChoice = async (questionsId, questionIndex, choiceId) => {
+  const questions = await model.findOne({ _id: questionsId });
+  if (!questions || !questions.questions[questionIndex]) return null;
+
+  const question = questions.questions[questionIndex];
+  question.choices = question.choices.filter(
+    (choice) => choice._id !== choiceId
   );
+
+  const query = {};
+  query[`questions.${questionIndex}.choices`] = question.choices;
+
+  return model.updateOne({ _id: questionsId }, { $set: query });
 };
 
-export const addBlank = async (questionsId, questionTitle, newAnswer) => {
-  return model.updateOne(
-    { _id: questionsId, "questions.title": questionTitle },
-    { $push: { "questions.$.blank": newAnswer } }
-  );
+export const addBlank = async (questionsId, questionIndex, newAnswer) => {
+  const query = {};
+  query[`questions.${questionIndex}.blank`] = newAnswer;
+
+  return model.updateOne({ _id: questionsId }, { $push: query });
 };
-export const deleteBlank = async (questionsId, questionTitle, answer) => {
-  return model.updateOne(
-    { _id: questionsId, "questions.title": questionTitle },
-    { $pull: { "questions.$.blank": answer } }
-  );
+
+export const deleteBlank = async (questionsId, questionIndex, answer) => {
+  const questions = await model.findOne({ _id: questionsId });
+  if (!questions || !questions.questions[questionIndex]) return null;
+
+  const question = questions.questions[questionIndex];
+  question.blank = question.blank.filter((b) => b !== answer);
+
+  const query = {};
+  query[`questions.${questionIndex}.blank`] = question.blank;
+
+  return model.updateOne({ _id: questionsId }, { $set: query });
 };
