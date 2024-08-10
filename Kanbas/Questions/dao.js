@@ -18,7 +18,7 @@ export const deleteQuestions = (quiestionsId) =>
 
 export const addQuestion = async (questionsId, newQuestion) => {
   return model.updateOne(
-    { _id: questionsId },
+    { quiz: questionsId },
     { $push: { questions: newQuestion } }
   );
 };
@@ -30,8 +30,6 @@ export const updateQuestion = async (
 ) => {
   const query = {};
   query[`questions.${questionIndex}`] = updatedQuestion;
-  console.log(questionsId, questionIndex, query);
-
   return model.updateOne({ quiz: questionsId }, { $set: query });
 };
 
