@@ -30,8 +30,9 @@ export const updateQuestion = async (
 ) => {
   const query = {};
   query[`questions.${questionIndex}`] = updatedQuestion;
+  console.log(questionsId, questionIndex, query);
 
-  return model.updateOne({ _id: questionsId }, { $set: query });
+  return model.updateOne({ quiz: questionsId }, { $set: query });
 };
 
 export const deleteQuestion = async (questionsId, questionIndex) => {
