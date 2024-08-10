@@ -26,15 +26,15 @@ export default function AnswersRoutes(app) {
       total += question.points;
       switch (question.type) {
         case "FILL_IN_BLANK":
-          if (question.blank.includes(relatedAnswer.blank)) {
+          if (relatedAnswer.blank && question.blank.includes(relatedAnswer.blank)) {
             upateScore();
           }
         case "MULTIPLE_CHOICE":
-          if (question.choices[relatedAnswer.choice]) {
+          if (relatedAnswer.choice !== -1 && question.choices[relatedAnswer.choice]) {
             upateScore();
           }
         case "TRUE_OR_FALSE":
-          if (question.true_or_false === relatedAnswer.true_or_false) {
+          if (relatedAnswer.true_or_false !== undefined && question.true_or_false === relatedAnswer.true_or_false) {
             upateScore();
           }
         default:
@@ -52,8 +52,15 @@ export default function AnswersRoutes(app) {
   });
 
   app.get("/api/quizzes/:qid/users/:uid/answers", async (req, res) => {
-    const answer = await dao.findAnswersByUser(req.params.qid, req.params.uid);
-    res.json(answer);
+    const { qid, uid } = req.params;
+    const { latest } = req.query;
+    if (latest === "true") {
+      const latestAnswer = await dao.findLatestAnswerByUser(qid, uid);
+      res.json(latestAnswer || null); 
+    } else {
+      const answer = await dao.findAnswersByUser(qid, uid);
+      res.json(answer);
+    }
   });
 
   app.get("/api/answers/:id", async (req, res) => {
