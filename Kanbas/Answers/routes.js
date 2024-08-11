@@ -29,18 +29,22 @@ export default function AnswersRoutes(app) {
           if (question.blank.includes(relatedAnswer.blank)) {
             upateScore();
           }
+          break;
         case "MULTIPLE_CHOICE":
-          if (question.choices[relatedAnswer.choice]) {
+          if (question.choices[relatedAnswer.choice].correct) {
             upateScore();
           }
+          break;
         case "TRUE_OR_FALSE":
           if (question.true_or_false === relatedAnswer.true_or_false) {
             upateScore();
           }
+          break;
         default:
           return;
       }
     });
+
     const newAnswerSet = await dao.createAnswer({
       ...answer,
       quiz: qid,
