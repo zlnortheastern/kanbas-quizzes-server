@@ -34,7 +34,7 @@ export default function AnswersRoutes(app) {
             upateScore();
           }
         case "TRUE_OR_FALSE":
-          if (relatedAnswer.true_or_false !== undefined && question.true_or_false === relatedAnswer.true_or_false) {
+          if (!!relatedAnswer.true_or_false && relatedAnswer.true_or_false !== undefined && question.true_or_false === relatedAnswer.true_or_false) {
             upateScore();
           }
         default:
