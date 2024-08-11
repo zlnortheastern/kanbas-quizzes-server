@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const questionSchema = new mongoose.Schema({
+  quiz: String,
   type: {
     type: String,
     enum: ["TRUE_OR_FALSE", "MULTIPLE_CHOICE", "FILL_IN_BLANK"],
