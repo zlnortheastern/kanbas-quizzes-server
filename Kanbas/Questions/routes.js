@@ -1,3 +1,4 @@
+import { createQuiz, updateQuiz } from "../Quizzes/dao.js";
 import * as dao from "./dao.js";
 export default function QuestionsRoutes(app) {
   app.put("/api/questions/:qid", async (req, res) => {
@@ -8,14 +9,6 @@ export default function QuestionsRoutes(app) {
   app.delete("/api/questions/:qid", async (req, res) => {
     const status = await dao.deleteQuestions(req.params.qid);
     res.json(status);
-  });
-
-  app.post("/api/quizzes/:qid/questions", async (req, res) => {
-    const newQuestionSet = await dao.createQuestionSet({
-      ...req.body,
-      quiz: req.params.qid,
-    });
-    res.send(newQuestionSet);
   });
 
   app.get("/api/questions", async (req, res) => {
@@ -53,90 +46,23 @@ export default function QuestionsRoutes(app) {
     res.json(question);
   });
 
-  app.put("/api/questions/:qid/update/:index", async (req, res) => {
-    const { qid, index } = req.params;
-    const questionIndex = parseInt(index, 10);
-    const updatedQuestion = await dao.updateQuestion(
+  app.put("/api/quizzes/:qid/questions", async (req, res) => {
+    const { qid } = req.params;
+    const updatedQuiz = await updateQuiz(qid, req.body.quiz);
+    const updatedQuestion = await dao.updateQuestionsByQuizId(
       qid,
-      questionIndex,
-      req.body
+      req.body.questionSet
     );
-    res.json(updatedQuestion);
+    res.json({ updatedQuiz, updatedQuestion });
   });
 
-  app.get("/api/questions/:qid/question/:index", async (req, res) => {
-    const { qid, index } = req.params;
-    const questionIndex = parseInt(index, 10);
-    const questionsSet = await dao.findQuestions(qid);
-    const question = questionsSet.questions[questionIndex];
-    if (question) {
-      res.json(question);
-    } else {
-      res.status(404).send("Question not found");
-    }
+  app.post("/api/quizzes/:qid/questions", async (req, res) => {
+    const { qid } = req.params;
+    const createdQuiz = await createQuiz(req.body.quiz);
+    const createdQuestionSet = await dao.createQuestionSet({
+      ...req.body.questionSet,
+      qid: qid,
+    });
+    res.json({ createdQuiz, createdQuestionSet });
   });
-
-  app.post("/api/questions/:qid/question/:index/choices", async (req, res) => {
-    const { qid, index } = req.params;
-    const questionIndex = parseInt(index, 10);
-    const newChoice = req.body;
-    try {
-      const updatedQuestion = await dao.addChoice(
-        qid,
-        questionIndex,
-        newChoice
-      );
-      res.json(updatedQuestion);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
-  app.delete(
-    "/api/questions/:qid/question/:index/choices/:choiceId",
-    async (req, res) => {
-      const { qid, index, choiceId } = req.params;
-      const questionIndex = parseInt(index, 10);
-      try {
-        const updatedQuestion = await dao.deleteChoice(
-          qid,
-          questionIndex,
-          choiceId
-        );
-        res.json(updatedQuestion);
-      } catch (error) {
-        res.status(500).send(error.message);
-      }
-    }
-  );
-
-  app.post("/api/questions/:qid/question/:index/blank", async (req, res) => {
-    const { qid, index } = req.params;
-    const questionIndex = parseInt(index, 10);
-    const newAnswer = req.body.answer;
-    try {
-      const updatedQuestion = await dao.addBlank(qid, questionIndex, newAnswer);
-      res.json(updatedQuestion);
-    } catch (error) {
-      res.status(500).send(error.message);
-    }
-  });
-
-  app.delete(
-    "/api/questions/:qid/question/:index/blank/:answer",
-    async (req, res) => {
-      const { qid, index, answer } = req.params;
-      const questionIndex = parseInt(index, 10);
-      try {
-        const updatedQuestion = await dao.deleteBlank(
-          qid,
-          questionIndex,
-          answer
-        );
-        res.json(updatedQuestion);
-      } catch (error) {
-        res.status(500).send(error.message);
-      }
-    }
-  );
 }
