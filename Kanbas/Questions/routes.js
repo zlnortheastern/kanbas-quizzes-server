@@ -56,12 +56,12 @@ export default function QuestionsRoutes(app) {
     res.json({ updatedQuiz, updatedQuestion });
   });
 
-  app.post("/api/quizzes/:qid/questions", async (req, res) => {
-    const { qid } = req.params;
-    const createdQuiz = await createQuiz(req.body.quiz);
+  app.post("/api/courses/:cid/quizzes/questions", async (req, res) => {
+    const { cid } = req.params;
+    const createdQuiz = await createQuiz({ ...req.body.quiz, course: cid });
     const createdQuestionSet = await dao.createQuestionSet({
       ...req.body.questionSet,
-      qid: qid,
+      quiz: createdQuiz._id,
     });
     res.json({ createdQuiz, createdQuestionSet });
   });
