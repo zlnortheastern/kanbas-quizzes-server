@@ -12,8 +12,8 @@ export const findAnswersByUser = (qid, uid) =>
 export const findLatestAnswerByUser = (qid, uid) =>
   model.findOne({ user: uid, quiz: qid }).sort({ submit_time: -1 });
 
-export const updateAnswer = (quiestionsId, quiestions) =>
-  model.updateOne({ _id: quiestionsId }, { $set: quiestions });
+export const updateAnswer = (answerId, quiestions) =>
+  model.updateOne({ _id: answerId }, { $set: quiestions });
 
 export const deleteAnswer = (quiestionsId) =>
   model.deleteOne({ _id: quiestionsId });
