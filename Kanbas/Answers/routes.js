@@ -19,6 +19,7 @@ export default function AnswersRoutes(app) {
     let total = 0;
     questions.questions.forEach((question, index) => {
       const relatedAnswer = answer.answers[index];
+      relatedAnswer.score = 0;
       const upateScore = () => {
         score += question.points;
         relatedAnswer.score = question.points;
