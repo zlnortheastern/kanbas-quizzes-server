@@ -14,7 +14,6 @@ export default function QuizzesRoutes(app) {
     const newQuiz = await dao.createQuiz({
       ...req.body,
       course: req.params.cid,
-      published:false,
     });
     res.send(newQuiz);
   });
