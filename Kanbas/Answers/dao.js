@@ -17,3 +17,6 @@ export const updateAnswer = (answerId, quiestions) =>
 
 export const deleteAnswer = (quiestionsId) =>
   model.deleteOne({ _id: quiestionsId });
+
+export const deleteAnswersByQuiz = (quizId) =>
+  model.deleteMany({ quiz: quizId });

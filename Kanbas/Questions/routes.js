@@ -1,3 +1,4 @@
+import { deleteAnswersByQuiz } from "../Answers/dao.js";
 import { createQuiz, updateQuiz } from "../Quizzes/dao.js";
 import * as dao from "./dao.js";
 export default function QuestionsRoutes(app) {
@@ -53,6 +54,7 @@ export default function QuestionsRoutes(app) {
       qid,
       req.body.questionSet
     );
+    if (updatedQuiz && updatedQuestion) await deleteAnswersByQuiz(qid);
     res.json({ updatedQuiz, updatedQuestion });
   });
 
